@@ -46,16 +46,16 @@ INSTALLED_APPS = [
 ]
 
 REST_FRAMEWORK = {
-         'DEFAULT_AUTHENTICATION_CLASSES': [
-             'rest_framework.authentication.SessionAuthentication',
-             'rest_framework.authentication.BasicAuthentication',
-             # Remove or comment out JWT if present
-             # 'rest_framework_simplejwt.authentication.JWTAuthentication',
-         ],
-         'DEFAULT_PERMISSION_CLASSES': [
-             'rest_framework.permissions.IsAuthenticated',  # This may cause the 401
-         ],
-     }
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
+
 
 ROOT_URLCONF = 'jira_m.urls'
 
@@ -146,3 +146,14 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+from datetime import timedelta
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'USER_ID_FIELD': 'id',  # Default, matches AbstractUser
+    'USER_ID_CLAIM': 'user_id',  # Default
+}

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import axios from 'axios';
 
@@ -10,14 +11,25 @@ const TaskForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('tasks/', { name, status, time_taken: timeTaken, due_date: dueDate });
+      const token = localStorage.getItem('access');
+      if (!token) {
+        console.error('No access token found.');
+        return;
+      }
+      await axios.post('tasks/', { name, status, time_taken: timeTaken, due_date: dueDate }, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log('Task Created:', { name, status, time_taken: timeTaken, due_date: dueDate });
       // Refresh list or clear form
       setName('');
       setStatus('To Do');
       setTimeTaken(0);
       setDueDate('');
     } catch (err) {
-      console.error(err);
+      console.error('Create Task Error:', err.response?.data || err.message);
     }
   };
 
